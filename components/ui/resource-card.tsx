@@ -10,7 +10,7 @@ interface ResourceCardProps {
     title: string;
     platform: string;
     type: string;
-    isPaid: boolean;
+    isPaid?: boolean; // Make this optional
     price?: number;
     duration?: string;
     thumbnailUrl: string;
@@ -27,10 +27,8 @@ export function ResourceCard({ resource }: ResourceCardProps) {
     switch (platform.toLowerCase()) {
       case 'youtube':
         return "bg-red-500/10 text-red-500 border-red-500/20";
-      case 'udemy':
-        return "bg-purple-500/10 text-purple-500 border-purple-500/20";
-      case 'coursera':
-        return "bg-blue-500/10 text-blue-500 border-blue-500/20";
+      case 'reddit':
+        return "bg-orange-500/10 text-orange-500 border-orange-500/20";
       default:
         return "";
     }
@@ -55,11 +53,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
                   {resource.platform}
                 </Badge>
                 <Badge variant="outline">{resource.type}</Badge>
-                {resource.isPaid ? (
-                  <Badge variant="outline">${resource.price}</Badge>
-                ) : (
-                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">Free</Badge>
-                )}
+                {/* Remove the isPaid badge */}
               </div>
             </div>
             <div className="flex items-center">
@@ -67,7 +61,9 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               <span className="text-sm">{resource.ratings.average} ({resource.ratings.count})</span>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground mb-4">Duration: {resource.duration}</p>
+          {resource.duration && (
+            <p className="text-sm text-muted-foreground mb-4">Duration: {resource.duration}</p>
+          )}
           <CardFooter className="px-0 pt-2 pb-0 flex justify-between">
             <Button variant="outline" size="sm">
               <Bookmark className="mr-1 h-4 w-4" /> Save
