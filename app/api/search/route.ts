@@ -1,6 +1,6 @@
 // app/api/search/route.ts
 import { NextResponse } from 'next/server';
-import { searchAllResources, Resource } from '@/app/services/resource-service';
+import { searchAllResources } from '@/app/services/resource-service';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

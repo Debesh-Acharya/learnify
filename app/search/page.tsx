@@ -9,7 +9,7 @@ import { Footer } from "@/components/ui/footer";
 import { ResourceCard } from "@/components/ui/resource-card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 
 interface Resource {
@@ -138,7 +138,7 @@ export default function SearchPage() {
       <Navbar />
       <div className="container px-4 md:px-6 py-6 flex-1">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">Results for "{query}"</h1>
+          <h1 className="text-2xl font-bold mb-2">Results for {`"${query}"`}</h1>
           <p className="text-muted-foreground">
             {loading ? "Searching..." : `Found ${sortedResources.length} resources`}
           </p>
@@ -246,9 +246,7 @@ export default function SearchPage() {
             ) : (
               <div className="text-center py-12">
                 <h3 className="text-xl font-medium mb-2">No results found</h3>
-                <p className="text-muted-foreground mb-6">
-                  Try adjusting your search or filters to find what you're looking for.
-                </p>
+                <p className="text-muted-foreground mb-6">Try adjusting your search or filters to find what you{`'`}re looking for.</p>
                 <Button asChild>
                   <Link href="/">Back to Home</Link>
                 </Button>

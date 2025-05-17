@@ -19,7 +19,7 @@ if (!MONGODB_URI) {
 }
 
 // Initialize cached with a default value if global.mongoose is undefined
-let cached: CachedConnection = global.mongoose || { conn: null, promise: null };
+const cached: CachedConnection = global.mongoose || { conn: null, promise: null };
 
 // Save the connection in the global object
 if (!global.mongoose) {
