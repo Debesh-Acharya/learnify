@@ -120,7 +120,7 @@ export default function SearchPage() {
       checked ? [...prev, type] : prev.filter(t => t !== type)
     );
   };
-
+  
   const handlePlatformChange = (platform: string, checked: boolean) => {
     setSelectedPlatforms(prev => 
       checked ? [...prev, platform] : prev.filter(p => p !== platform)
@@ -223,7 +223,7 @@ export default function SearchPage() {
                 </TabsList>
               </div>
             </Tabs>
-
+            
             {(loading || isPending) ? (
               <div className="flex justify-center items-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />

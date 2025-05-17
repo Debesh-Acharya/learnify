@@ -1,6 +1,6 @@
-// app/api/search/route.ts
 import { NextResponse } from 'next/server';
 import { searchAllResources } from '@/app/services/resource-service';
+import type { Resource } from '@/app/services/resource-service'; // Import as type only
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -23,8 +23,8 @@ export async function GET(request: Request) {
     
     // Log the initial results for debugging
     console.log(`Initial results: ${results.length} total, ` + 
-      `YouTube: ${results.filter(r => r.platform === "YouTube").length}, ` +
-      `Reddit: ${results.filter(r => r.platform === "Reddit").length}`);
+      `YouTube: ${results.filter((r: Resource) => r.platform === "YouTube").length}, ` +
+      `Reddit: ${results.filter((r: Resource) => r.platform === "Reddit").length}`);
     
     // Apply type filter if specified
     if (types.length > 0) {
@@ -49,16 +49,16 @@ export async function GET(request: Request) {
     
     // Log the filtered results for debugging
     console.log(`After filtering: ${results.length} total, ` + 
-      `YouTube: ${results.filter(r => r.platform === "YouTube").length}, ` +
-      `Reddit: ${results.filter(r => r.platform === "Reddit").length}`);
+      `YouTube: ${results.filter((r: Resource) => r.platform === "YouTube").length}, ` +
+      `Reddit: ${results.filter((r: Resource) => r.platform === "Reddit").length}`);
 
     return NextResponse.json({ 
       results,
       meta: {
         total: results.length,
         sources: {
-          YouTube: results.filter(r => r.platform === "YouTube").length,
-          Reddit: results.filter(r => r.platform === "Reddit").length
+          YouTube: results.filter((r: Resource) => r.platform === "YouTube").length,
+          Reddit: results.filter((r: Resource) => r.platform === "Reddit").length
         }
       }
     });

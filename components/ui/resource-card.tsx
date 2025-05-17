@@ -1,8 +1,10 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Bookmark } from "lucide-react"
-import { cn } from "@/lib/utils"
+// components/ui/resource-card.tsx
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Bookmark } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { LazyYouTube } from "@/components/ui/lazy-youtube";
 
 interface ResourceCardProps {
   resource: {
@@ -10,9 +12,6 @@ interface ResourceCardProps {
     title: string;
     platform: string;
     type: string;
-    isPaid?: boolean; // Make this optional
-    price?: number;
-    duration?: string;
     thumbnailUrl: string;
     url: string;
     ratings: {
@@ -34,15 +33,22 @@ export function ResourceCard({ resource }: ResourceCardProps) {
     }
   };
 
+  const isYouTubeVideo = resource.platform === "YouTube" && resource.type === "video";
+  const youtubeVideoId = isYouTubeVideo ? resource.id : null;
+
   return (
     <Card className="overflow-hidden">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3 h-48 md:h-auto relative">
-          <img 
-            src={resource.thumbnailUrl} 
-            alt={resource.title}
-            className="w-full h-full object-cover"
-          />
+          {isYouTubeVideo ? (
+            <LazyYouTube videoId={youtubeVideoId!} title={resource.title} />
+          ) : (
+            <img 
+              src={resource.thumbnailUrl} 
+              alt={resource.title}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
         <div className="flex-1 p-4">
           <div className="flex justify-between items-start">
@@ -53,7 +59,6 @@ export function ResourceCard({ resource }: ResourceCardProps) {
                   {resource.platform}
                 </Badge>
                 <Badge variant="outline">{resource.type}</Badge>
-                {/* Remove the isPaid badge */}
               </div>
             </div>
             <div className="flex items-center">
@@ -61,9 +66,6 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               <span className="text-sm">{resource.ratings.average} ({resource.ratings.count})</span>
             </div>
           </div>
-          {resource.duration && (
-            <p className="text-sm text-muted-foreground mb-4">Duration: {resource.duration}</p>
-          )}
           <CardFooter className="px-0 pt-2 pb-0 flex justify-between">
             <Button variant="outline" size="sm">
               <Bookmark className="mr-1 h-4 w-4" /> Save
@@ -75,5 +77,5 @@ export function ResourceCard({ resource }: ResourceCardProps) {
         </div>
       </div>
     </Card>
-  )
+  );
 }
