@@ -20,12 +20,53 @@ interface YouTubeItem {
   };
 }
 
-export async function searchYouTubeVideos(query: string, maxResults: number = 10) {
+interface YouTubeVideoStatistics {
+  viewCount?: string;
+  likeCount?: string;
+}
+
+interface YouTubeVideoSnippet {
+  title: string;
+  description: string;
+  publishedAt: string;
+  thumbnails: {
+    high?: {
+      url: string;
+    };
+    default?: {
+      url: string;
+    };
+  };
+}
+
+interface YouTubeVideoItem {
+  id: string;
+  snippet: YouTubeVideoSnippet;
+  statistics?: YouTubeVideoStatistics;
+}
+
+// Define the Resource type
+export interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  platform: string;
+  type: string;
+  thumbnailUrl: string;
+  url: string;
+  ratings: {
+    average: number;
+    count: number;
+  };
+  dateIndexed: string;
+}
+
+export async function searchYouTubeVideos(query: string, maxResults: number = 10): Promise<Resource[]> {
   // Create a cache key based on the query and maxResults
   const cacheKey = `youtube_search_${query}_${maxResults}`;
   
   // Check if we have cached results
-  const cachedResults = getCachedData(cacheKey);
+  const cachedResults = getCachedData<Resource[]>(cacheKey);
   if (cachedResults) {
     console.log("Using cached YouTube results for:", query);
     return cachedResults;
@@ -78,14 +119,14 @@ export async function searchYouTubeVideos(query: string, maxResults: number = 10
     setCachedData(cacheKey, results);
     
     return results;
-  } catch (error) {
-    console.error("Error fetching YouTube videos:", error);
+  } catch (error: unknown) {
+    console.error("Error fetching YouTube videos:", error instanceof Error ? error.message : String(error));
     return [];
   }
 }
 
 // Function to fetch multiple videos in a single request
-export async function fetchYouTubeVideosById(videoIds: string[]) {
+export async function fetchYouTubeVideosById(videoIds: string[]): Promise<Resource[]> {
   if (videoIds.length === 0) return [];
   
   // Limit to 50 IDs per request as per API limits
@@ -96,13 +137,13 @@ export async function fetchYouTubeVideosById(videoIds: string[]) {
     batches.push(videoIds.slice(i, i + batchSize));
   }
   
-  const results = [];
+  const results: Resource[] = [];
   
   for (const batch of batches) {
     const cacheKey = `youtube_videos_${batch.join(',')}`;
     
     // Check cache first
-    const cachedResults = getCachedData(cacheKey);
+    const cachedResults = getCachedData<Resource[]>(cacheKey);
     if (cachedResults) {
       results.push(...cachedResults);
       continue;
@@ -124,7 +165,7 @@ export async function fetchYouTubeVideosById(videoIds: string[]) {
       const data = await response.json();
       
       if (data.items && data.items.length > 0) {
-        const batchResults = data.items.map((item: any) => ({
+        const batchResults = data.items.map((item: YouTubeVideoItem) => ({
           id: item.id,
           title: item.snippet.title,
           description: item.snippet.description,
@@ -142,8 +183,8 @@ export async function fetchYouTubeVideosById(videoIds: string[]) {
         setCachedData(cacheKey, batchResults);
         results.push(...batchResults);
       }
-    } catch (error) {
-      console.error("Error fetching YouTube videos batch:", error);
+    } catch (error: unknown) {
+      console.error("Error fetching YouTube videos batch:", error instanceof Error ? error.message : String(error));
     }
   }
   

@@ -1,10 +1,9 @@
-// src/types/mongoose.d.ts
-import mongoose from 'mongoose';
+import * as mongooseType from 'mongoose';
 
 declare global {
-  var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
+  let mongoose: {
+    conn: typeof mongooseType | null;
+    promise: Promise<typeof mongooseType> | null;
   } | undefined;
 }
 

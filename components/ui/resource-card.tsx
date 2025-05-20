@@ -1,10 +1,10 @@
-// components/ui/resource-card.tsx
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LazyYouTube } from "@/components/ui/lazy-youtube";
+import Image from "next/image";
 
 interface ResourceCardProps {
   resource: {
@@ -43,10 +43,12 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           {isYouTubeVideo ? (
             <LazyYouTube videoId={youtubeVideoId!} title={resource.title} />
           ) : (
-            <img 
+            <Image 
               src={resource.thumbnailUrl} 
               alt={resource.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           )}
         </div>
@@ -62,7 +64,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               </div>
             </div>
             <div className="flex items-center">
-              <span className="text-yellow-500 mr-1">★</span>
+              <span className="text-yellow-500 mr-1">&#9733;</span>
               <span className="text-sm">{resource.ratings.average} ({resource.ratings.count})</span>
             </div>
           </div>

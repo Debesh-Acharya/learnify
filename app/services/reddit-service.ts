@@ -1,3 +1,18 @@
+export interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  platform: string;
+  type: string;
+  thumbnailUrl: string;
+  url: string;
+  ratings: {
+    average: number;
+    count: number;
+  };
+  dateIndexed: Date;
+}
+
 interface RedditPost {
   id: string;
   title: string;
@@ -20,7 +35,7 @@ interface RedditResponse {
   };
 }
 
-export async function searchRedditPosts(query: string, maxResults: number = 10): Promise<any[]> {
+export async function searchRedditPosts(query: string, maxResults: number = 10): Promise<Resource[]> {
   try {
     // Using the public JSON API (no authentication required)
     const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=relevance&limit=${maxResults}`;
