@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/reddit/:path*',
+        destination: 'https://api.reddit.com/:path*',
+      },
+    ];
+  },
+
   images: {
     remotePatterns: [
       {
