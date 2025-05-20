@@ -10,7 +10,7 @@ export interface Resource {
     average: number;
     count: number;
   };
-  dateIndexed: string; // Changed from Date to string
+  dateIndexed: string;
 }
 
 interface RedditPost {
@@ -37,8 +37,8 @@ interface RedditResponse {
 
 export async function searchRedditPosts(query: string, maxResults: number = 10): Promise<Resource[]> {
   try {
-    // Using the public JSON API (no authentication required)
-    const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=relevance&limit=${maxResults}`;
+    // Using api.reddit.com instead of www.reddit.com to avoid CORS issues
+    const url = `https://api.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=relevance&limit=${maxResults}`;
     
     const response = await fetch(url, {
       headers: {
@@ -103,7 +103,8 @@ export async function fetchEducationalSubreddits(topic: string, maxResults: numb
     // Choose a relevant subreddit based on the topic or use a default one
     const subreddit = 'learnprogramming'; // You could implement logic to choose based on topic
     
-    const url = `https://www.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(topic)}&sort=top&limit=${maxResults}`;
+    // Using api.reddit.com instead of www.reddit.com to avoid CORS issues
+    const url = `https://api.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(topic)}&sort=top&limit=${maxResults}`;
     
     const response = await fetch(url, {
       headers: {
