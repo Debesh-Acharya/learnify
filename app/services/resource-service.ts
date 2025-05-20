@@ -1,4 +1,3 @@
-// app/services/resource-service.ts
 import { searchYouTubeVideos } from './youtube-service';
 import { searchRedditPosts } from './reddit-service';
 
@@ -28,15 +27,15 @@ export async function searchAllResources(query: string): Promise<Resource[]> {
     ]);
     
     // Handle results, even if one API fails
-    const allResults = [
+    const allResults: Resource[] = [
       ...(youtubeResults.status === 'fulfilled' ? youtubeResults.value : []),
       ...(redditResults.status === 'fulfilled' ? redditResults.value : [])
     ];
     
     console.log("Total combined results:", allResults.length);
     return allResults;
-  } catch (error) {
-    console.error("Error searching resources:", error);
+  } catch (error: unknown) {
+    console.error("Error searching resources:", error instanceof Error ? error.message : String(error));
     return [];
   }
 }

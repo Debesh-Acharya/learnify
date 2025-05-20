@@ -10,7 +10,7 @@ export interface Resource {
     average: number;
     count: number;
   };
-  dateIndexed: Date;
+  dateIndexed: string; // Changed from Date to string
 }
 
 interface RedditPost {
@@ -70,7 +70,7 @@ export async function searchRedditPosts(query: string, maxResults: number = 10):
           average: post.score > 0 ? 5 : 3, // Convert score to a rating
           count: post.num_comments 
         },
-        dateIndexed: new Date(post.created_utc * 1000)
+        dateIndexed: new Date(post.created_utc * 1000).toISOString() // Convert Date to ISO string
       };
     });
   } catch (error: unknown) {
@@ -134,7 +134,7 @@ export async function fetchEducationalSubreddits(topic: string, maxResults: numb
           average: post.score > 0 ? 5 : 3,
           count: post.num_comments 
         },
-        dateIndexed: new Date(post.created_utc * 1000)
+        dateIndexed: new Date(post.created_utc * 1000).toISOString() // Convert Date to ISO string
       };
     });
   } catch (error: unknown) {
