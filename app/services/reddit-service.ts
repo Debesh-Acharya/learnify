@@ -37,20 +37,32 @@ interface RedditResponse {
 
 export async function searchRedditPosts(query: string, maxResults: number = 10): Promise<Resource[]> {
   try {
+    console.log("Fetching Reddit posts for query:", query);
+    
     // Using api.reddit.com instead of www.reddit.com to avoid CORS issues
     const url = `https://api.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=relevance&limit=${maxResults}`;
     
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Learnify/1.0'
-      }
+      },
+      // Add cache: 'no-store' to prevent caching issues in production
+      cache: 'no-store'
     });
     
     if (!response.ok) {
+      console.error(`Reddit API error: ${response.status} ${response.statusText}`);
       throw new Error(`Reddit API responded with status: ${response.status}`);
     }
     
     const data: RedditResponse = await response.json();
+    
+    if (!data.data?.children) {
+      console.warn("Reddit API returned unexpected data structure:", data);
+      return [];
+    }
+    
+    console.log(`Found ${data.data.children.length} Reddit posts`);
     
     // Transform Reddit response to match our Resource model
     return data.data.children.map(item => {
@@ -100,6 +112,8 @@ export function getEducationalSubreddits(): string[] {
 // Optional: Function to fetch posts from specific educational subreddits
 export async function fetchEducationalSubreddits(topic: string, maxResults: number = 10): Promise<Resource[]> {
   try {
+    console.log("Fetching educational subreddit posts for topic:", topic);
+    
     // Choose a relevant subreddit based on the topic or use a default one
     const subreddit = 'learnprogramming'; // You could implement logic to choose based on topic
     
@@ -109,14 +123,24 @@ export async function fetchEducationalSubreddits(topic: string, maxResults: numb
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Learnify/1.0'
-      }
+      },
+      // Add cache: 'no-store' to prevent caching issues in production
+      cache: 'no-store'
     });
     
     if (!response.ok) {
+      console.error(`Reddit API error for subreddit: ${response.status} ${response.statusText}`);
       throw new Error(`Reddit API responded with status: ${response.status}`);
     }
     
     const data: RedditResponse = await response.json();
+    
+    if (!data.data?.children) {
+      console.warn("Reddit API returned unexpected data structure for subreddit:", data);
+      return [];
+    }
+    
+    console.log(`Found ${data.data.children.length} posts in subreddit ${subreddit}`);
     
     return data.data.children.map(item => {
       const post = item.data;

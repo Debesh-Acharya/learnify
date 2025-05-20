@@ -13,7 +13,6 @@ const nextConfig: NextConfig = {
         hostname: 'a.thumbs.redditmedia.com',
         pathname: '/**',
       },
-      // Add other Reddit domains you might encounter
       {
         protocol: 'https',
         hostname: 'preview.redd.it',
@@ -27,6 +26,16 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'www.redditstatic.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'external-preview.redd.it', // Added this domain
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'styles.redditmedia.com',
         pathname: '/**',
       }
     ],
