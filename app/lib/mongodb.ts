@@ -1,14 +1,9 @@
 import mongoose from 'mongoose';
 
-// Define an interface for the cached mongoose connection
+// Use the same interface as in your .d.ts for clarity (optional)
 interface CachedConnection {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
-}
-
-// Use a different name for the global property to avoid conflicts
-declare global {
-  var mongooseCache: CachedConnection | undefined;
 }
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -17,12 +12,15 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
 
-// Initialize cached with a default value if global.mongooseCache is undefined
-const cached: CachedConnection = global.mongooseCache || { conn: null, promise: null };
+// Add this line before using globalThis.mongoose
+const globalWithMongoose = globalThis as typeof globalThis & {
+  mongoose?: CachedConnection;
+};
 
-// Save the connection in the global object
-if (!global.mongooseCache) {
-  global.mongooseCache = cached;
+const cached: CachedConnection = globalWithMongoose.mongoose || { conn: null, promise: null };
+
+if (!globalWithMongoose.mongoose) {
+  globalWithMongoose.mongoose = cached;
 }
 
 async function connectDB() {
@@ -42,7 +40,7 @@ async function connectDB() {
       return mongoose;
     });
   }
-  
+
   cached.conn = await cached.promise;
   return cached.conn;
 }

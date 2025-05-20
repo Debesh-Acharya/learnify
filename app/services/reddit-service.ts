@@ -62,7 +62,6 @@ export async function searchRedditPosts(query: string, maxResults: number = 10):
         description: post.selftext.substring(0, 200) + (post.selftext.length > 200 ? '...' : ''),
         platform: "Reddit",
         type: "article",
-        isPaid: false,
         thumbnailUrl: post.thumbnail && post.thumbnail !== 'self' && post.thumbnail !== 'default' 
           ? post.thumbnail 
           : 'https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png',
@@ -74,27 +73,32 @@ export async function searchRedditPosts(query: string, maxResults: number = 10):
         dateIndexed: new Date(post.created_utc * 1000)
       };
     });
-  } catch (error) {
-    console.error("Error fetching Reddit posts:", error);
+  } catch (error: unknown) {
+    console.error("Error fetching Reddit posts:", error instanceof Error ? error.message : String(error));
     return [];
   }
 }
 
+// List of educational subreddits
+const educationalSubreddits = [
+  'learnprogramming',
+  'education',
+  'science',
+  'history',
+  'math',
+  'philosophy',
+  'AskHistorians',
+  'askscience',
+  'explainlikeimfive'
+];
+
+// Function to get the list of educational subreddits
+export function getEducationalSubreddits(): string[] {
+  return educationalSubreddits;
+}
+
 // Optional: Function to fetch posts from specific educational subreddits
-export async function fetchEducationalSubreddits(topic: string, maxResults: number = 10): Promise<any[]> {
-  // List of educational subreddits
-  const educationalSubreddits = [
-    'learnprogramming',
-    'education',
-    'science',
-    'history',
-    'math',
-    'philosophy',
-    'AskHistorians',
-    'askscience',
-    'explainlikeimfive'
-  ];
-  
+export async function fetchEducationalSubreddits(topic: string, maxResults: number = 10): Promise<Resource[]> {
   try {
     // Choose a relevant subreddit based on the topic or use a default one
     const subreddit = 'learnprogramming'; // You could implement logic to choose based on topic
@@ -122,7 +126,6 @@ export async function fetchEducationalSubreddits(topic: string, maxResults: numb
         description: post.selftext.substring(0, 200) + (post.selftext.length > 200 ? '...' : ''),
         platform: "Reddit",
         type: "article",
-        isPaid: false,
         thumbnailUrl: post.thumbnail && post.thumbnail !== 'self' && post.thumbnail !== 'default' 
           ? post.thumbnail 
           : 'https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png',
@@ -134,8 +137,8 @@ export async function fetchEducationalSubreddits(topic: string, maxResults: numb
         dateIndexed: new Date(post.created_utc * 1000)
       };
     });
-  } catch (error) {
-    console.error("Error fetching subreddit posts:", error);
+  } catch (error: unknown) {
+    console.error("Error fetching subreddit posts:", error instanceof Error ? error.message : String(error));
     return [];
   }
 }
